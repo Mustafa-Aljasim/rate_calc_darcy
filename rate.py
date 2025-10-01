@@ -36,7 +36,8 @@ st.header("Sensitivity Analysis")
 
 options = st.multiselect(
     "Select parameters to vary:",
-    ["Drainage radius (re)", "Viscosity (μ)", "ΔP (Pe-Pwf)", "Reservoir Pressure (Pe)", 
+    ["Flow rate (q) (STB/day)", "Layer thickness (h) (ft)", "Formation volume factor (B) (RB/STB)", 
+     "Drainage radius (re)", "Viscosity (μ)", "ΔP (Pe-Pwf)", "Reservoir Pressure (Pe)", 
      "Bottomhole Flowing Pressure (Pwf)", "Skin (s)"],
     default=["Drainage radius (re)"]
 )
@@ -72,6 +73,16 @@ if "Skin (s)" in options:
     s_range = np.linspace(-5, 20, 50)
     k_values = (162.6 * q * mu * B * (np.log(re/rw) + s_range)) / (h * delta_p)
     ax.plot(s_range, k_values, label="Sensitivity to Skin")
+
+if "Flow rate (q) (STB/day)" in options:
+    q_range = np.linspace(100, 4000, 50)
+    k_values = (162.6 * q_range * mu * B * (np.log(re/rw) + skin)) / (h * delta_p)
+    ax.plot(q_range, k_values, label="Sensitivity to q")
+
+if "Layer thickness (h) (ft)" in options:
+    h_range = np.linspace(5, 100, 50)
+    k_values = (162.6 * q * mu * B * (np.log(re/rw) + skin)) / (h_range * delta_p)
+    ax.plot(h_range, k_values, label="Sensitivity to h")
 
 ax.set_xlabel("Parameter Value")
 ax.set_ylabel("Permeability (mD)")
